@@ -43,18 +43,17 @@ document.querySelector("#create-note").addEventListener("click", function (e) {
   // console.log("clicked");
   // console.log(e);
 });
-document.querySelector("#remove-notes").addEventListener("click", function (e) {
-  e.target.textContent = "Clicked";
-});
+
 // The empty 'filters' object above is being filled with the user input value.
 document.querySelector("#search-text").addEventListener("input", function (e) {
   // console.log(e.target.value);
   filters.searchText = e.target.value;
   renderNotes(notes, filters);
 });
-// const newPara = document.createElement("p");
-// newPara.textContent = "This is a new element from JS";
-// document.querySelector("body").appendChild(newPara);
-// // Select (and remove) first p
-// const p = document.querySelector("p");
-// p.remove();
+// Stopping default behaviour of the submit button field.
+//Then console logging the firstName value.
+document.querySelector("#name-form").addEventListener("submit", function (e) {
+  e.preventDefault();
+  console.log(e.target.elements.firstName.value);
+  e.target.elements.firstName.value = "";
+});
