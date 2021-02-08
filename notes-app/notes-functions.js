@@ -1,42 +1,88 @@
-//Read existing notes from local storage.
-const getSavedNotes = function () {
-  const notesJSON = localStorage.getItem("notes");
+//Read existing todos from local storage.
+const getSavedTodos = function () {
+  const todosJSON = localStorage.getItem("todos");
 
-  if (notesJSON !== null) {
-    return JSON.parse(notesJSON);
+  if (todosJSON !== null) {
+    return JSON.parse(todosJSON);
   } else {
     return [];
   }
 };
 
-// Save notes to local storage.
-const saveNotes = function (notes) {
-  localStorage.setItem("notes", JSON.stringify(notes));
+// Save Todos to local storage.
+const saveTodos = function (todos) {
+  localStorage.setItem("todos", JSON.stringify(todos));
 };
 
-// Generate the DOM structure for a note.
-const generateNoteDOM = function (note) {
-  const noteEl = document.createElement("p");
-  if (note.title.length > 0) {
-    noteEl.textContent = note.title;
-  } else {
-    noteEl.textContent = "Unnamed note";
+// Remove a todo from the list.
+const removeTodo = function (id) {
+  const todoIndex = todos.findIndex(function (todo) {
+    return todo.id === id;
+  });
+  if (todoIndex > -1) {
+    todos.splice(todoIndex, 1);
   }
-  return noteEl;
 };
 
-// renderNotes shows the notes which match the search text i.e. the filtered notes.
-//So the title text matches the filter / search text.
-const renderNotes = function (notes, filters) {
-  const filteredNotes = notes.filter(function (note) {
-    return note.title.toLowerCase().includes(filters.searchText.toLowerCase());
+// Render application Todos based on filters.
+const renderTodos = function (todos, filters) {
+  let filteredToDos = todos.filter(function (todo) {
+    return todo.text.toLowerCase().includes(filters.searchText.toLowerCase());
   });
+  // Logic to hide the completed Todos when the checkbox is ticked.
+  filteredTodos = filteredToDos.filter(function (todo) {
+    if (filters.hideCompleted) {
+      return !todo.completed;
+    } else {
+      return true;
+    }
+  });
+
+  // Print message saying how many todos are left.
+  const incompleteTodos = filteredTodos.filter(function (todo) {
+    return !todo.completed;
+  });
+
   // Using innerHTML wipes out the div of any previous html before adding the filtered notes.
-  // Whatever is in the quotes would be rendered to the div.
-  document.querySelector("#notes").innerHTML = "";
-  // The filtered note is appended to the empty div (#notes).
-  filteredNotes.forEach(function (note) {
-    const noteEl = generateNoteDOM(note);
-    document.querySelector("#notes").appendChild(noteEl);
+  document.querySelector("#todos").innerHTML = "";
+  document
+    .querySelector("#todos")
+    .appendChild(generateSummaryDOM(incompleteTodos));
+
+  filteredTodos.forEach(function (todo) {
+    document.querySelector("#todos").appendChild(generateTodoDOM(todo));
   });
+};
+
+// Generate the DOM elements for each new todo.
+const generateTodoDOM = function (todo) {
+  const todoEl = document.createElement("div");
+  const checkbox = document.createElement("input");
+  const todoText = document.createElement("span");
+  const removeButton = document.createElement("button");
+
+  // Setup the todo checkbox
+  checkbox.setAttribute("type", "checkbox");
+  todoEl.appendChild(checkbox);
+
+  // Setup the todo text
+  todoText.textContent = todo.text;
+  todoEl.appendChild(todoText);
+
+  // Setup the remove button
+  removeButton.textContent = "Remove Todo";
+  todoEl.appendChild(removeButton);
+  removeButton.addEventListener("click", function () {
+    removeTodo(todo.id);
+    saveTodos(todos);
+    renderTodos(todos, filters);
+  });
+  return todoEl;
+};
+
+// Generate the incomplete Todos summary header.
+const generateSummaryDOM = function (incompleteTodos) {
+  const summary = document.createElement("h2");
+  summary.textContent = `You have ${incompleteTodos.length} Todos left`;
+  return summary;
 };

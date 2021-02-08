@@ -1,6 +1,5 @@
 const notes = getSavedNotes();
-// Creating a filter system. When user searches in the input field, the filtered notes will
-// be appended to the empty div.
+
 const filters = {
   searchText: "",
 };
@@ -13,6 +12,7 @@ document.querySelector("#create-note").addEventListener("click", function (e) {
   // e.target.textContent = "Clicked";
   //push an object onto notes array and save what's added to local storage.
   notes.push({
+    id: uuidv4(),
     title: "",
     body: "",
   });
