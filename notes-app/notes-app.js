@@ -1,4 +1,4 @@
-const notes = getSavedNotes();
+let notes = getSavedNotes();
 
 const filters = {
   searchText: "",
@@ -17,7 +17,7 @@ document.querySelector("#create-note").addEventListener("click", function (e) {
     body: "",
   });
   saveNotes(notes);
-  renderNotes(notes, filters);
+  location.assign(`/edit.html#${uuidv4()}`);
 });
 
 // The empty 'filters' object above is being filled with the user input value.
@@ -29,6 +29,20 @@ document.querySelector("#search-text").addEventListener("input", function (e) {
 document.querySelector("#filter-by").addEventListener("change", function (e) {
   console.log(e.target.value);
 });
+
+// Syncing data across pages.
+window.addEventListener("storage", function (e) {
+  if (e.key === "notes") {
+    notes = JSON.parse(e.newValue);
+    renderNotes(notes, filters);
+  }
+});
+
+const now = new Date();
+timestamp = now.getTime();
+
+const myDate = new Date(timestamp);
+console.log(myDate.getFullYear());
 
 //CRUD local storage operations:
 // localStorage.setItem("location", "Cambridge");
