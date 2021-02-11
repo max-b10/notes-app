@@ -8,7 +8,7 @@ const filters = {
 renderNotes(notes, filters);
 
 // Add event listener click. Changes text content of the event target i.e. the button.
-document.querySelector("#create-note").addEventListener("click", function (e) {
+document.querySelector("#create-note").addEventListener("click", (e) => {
   // e.target.textContent = "Clicked";
   //push an object onto notes array and save what's added to local storage.
   notes.push({
@@ -21,28 +21,22 @@ document.querySelector("#create-note").addEventListener("click", function (e) {
 });
 
 // The empty 'filters' object above is being filled with the user input value.
-document.querySelector("#search-text").addEventListener("input", function (e) {
+document.querySelector("#search-text").addEventListener("input", (e) => {
   // console.log(e.target.value);
   filters.searchText = e.target.value;
   renderNotes(notes, filters);
 });
-document.querySelector("#filter-by").addEventListener("change", function (e) {
+document.querySelector("#filter-by").addEventListener("change", (e) => {
   console.log(e.target.value);
 });
 
 // Syncing data across pages.
-window.addEventListener("storage", function (e) {
+window.addEventListener("storage", (e) => {
   if (e.key === "notes") {
     notes = JSON.parse(e.newValue);
     renderNotes(notes, filters);
   }
 });
-
-const now = new Date();
-timestamp = now.getTime();
-
-const myDate = new Date(timestamp);
-console.log(myDate.getFullYear());
 
 //CRUD local storage operations:
 // localStorage.setItem("location", "Cambridge");
